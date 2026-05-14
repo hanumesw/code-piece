@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodePiece</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LANDING SCREEN -->
+<div id="screen-landing" class="screen active">
+  <div class="landing-center">
+    <div class="logo">♠ CodePiece ♥</div>
+    <p class="tagline">~ The Grand Card Adventure ~</p>
+    <div class="landing-btns">
+      <button class="btn btn-primary" id="btn-open-host">Host a New Game</button>
+      <button class="btn btn-outline" id="btn-open-join">Join an Existing Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY SCREEN -->
+<div id="screen-lobby" class="screen">
+  <div class="lobby-wrap">
+    <h1 class="logo-sm">♠ CodePiece ♥</h1>
+    <div class="room-code-box">
+      Room Code: <span id="display-code">------</span>
+    </div>
+    <div class="team-grid" id="lobby-players"></div>
+    <div class="lobby-actions" id="lobby-actions"></div>
+    <p class="lobby-hint" id="lobby-hint"></p>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="screen-game" class="screen">
+  <div class="top-bar">
+    <div class="top-left">
+      <span id="info-match-game">Match 1 · Game 1/4</span>
+    </div>
+    <div class="score-panel">
+      <div class="score-block" id="score-block-1">
+        <div class="score-label">Team 1</div>
+        <div class="score-num" id="tricks-t1">0</div>
+        <div class="score-sub" id="games-t1">0 games</div>
+      </div>
+      <div class="score-vs">vs</div>
+      <div class="score-block" id="score-block-2">
+        <div class="score-label">Team 2</div>
+        <div class="score-num" id="tricks-t2">0</div>
+        <div class="score-sub" id="games-t2">0 games</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <span id="info-trump" class="trump-info"></span>
+      <button class="rules-btn" id="btn-rules">?</button>
+    </div>
+  </div>
+
+  <!-- Trump selection banner — shown inline so player can see their hand -->
+  <div id="trump-banner" class="trump-banner" style="display:none">
+    <div class="trump-banner-inner">
+      <span id="trump-banner-msg" class="trump-banner-msg"></span>
+      <div id="trump-banner-suits" class="trump-banner-suits">
+        <button class="tsb red" data-suit="hearts">♥ Hearts</button>
+        <button class="tsb" data-suit="spades">♠ Spades</button>
+        <button class="tsb red" data-suit="diamonds">♦ Diamonds</button>
+        <button class="tsb" data-suit="clubs">♣ Clubs</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <!-- Top player (across) -->
+    <div class="p-area p-top" id="p-top">
+      <div class="p-name" id="pname-top"></div>
+      <div class="p-backs" id="pbacks-top"></div>
+    </div>
+
+    <!-- Left player -->
+    <div class="p-area p-left" id="p-left">
+      <div class="p-backs vertical" id="pbacks-left"></div>
+      <div class="p-name" id="pname-left"></div>
+    </div>
+
+    <!-- Center trick area -->
+    <div class="center-zone">
+      <div class="trick-grid" id="trick-grid"></div>
+      <div class="center-actions">
+        <button class="btn btn-sm btn-outline" id="btn-last-trick" style="display:none">View Last Trick</button>
+      </div>
+    </div>
+
+    <!-- Right player -->
+    <div class="p-area p-right" id="p-right">
+      <div class="p-name" id="pname-right"></div>
+      <div class="p-backs vertical" id="pbacks-right"></div>
+    </div>
+
+    <!-- Bottom (me) -->
+    <div class="p-area p-bottom" id="p-bottom">
+      <div class="p-name" id="pname-bottom">You</div>
+    </div>
+  </div>
+
+  <div id="your-turn-flash" class="your-turn-flash" style="display:none">YOUR TURN</div>
+  <div class="hand-area" id="my-hand"></div>
+  <div class="status-bar" id="status-bar">&nbsp;</div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div id="screen-game-over" class="screen result-screen">
+  <div class="result-card">
+    <h2 id="go-title">Game Over</h2>
+    <div id="go-body"></div>
+    <div class="result-actions" id="go-actions"></div>
+  </div>
+</div>
+
+<!-- MATCH OVER SCREEN -->
+<div id="screen-match-over" class="screen result-screen">
+  <div class="result-card">
+    <h2 id="mo-title">Match Over</h2>
+    <div id="mo-body"></div>
+    <div class="result-actions" id="mo-actions"></div>
+  </div>
+</div>
+
+<!-- SESSION OVER SCREEN -->
+<div id="screen-session-over" class="screen result-screen">
+  <div class="result-card">
+    <h1 id="so-title">Session Over</h1>
+    <div id="so-body"></div>
+    <div class="result-actions" id="so-actions"></div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Host Modal -->
+<div class="modal-backdrop" id="modal-host" style="display:none">
+  <div class="modal">
+    <h2>Host a Game</h2>
+    <label>Your Name</label>
+    <input type="text" id="host-name" placeholder="Enter your name" maxlength="16" autocomplete="off">
+    <label>Number of Matches</label>
+    <select id="match-count">
+      <option value="1">1 match</option>
+      <option value="2">2 matches</option>
+      <option value="3">3 matches</option>
+      <option value="5">5 matches</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-create-room">Create Room</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-host')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Join Modal -->
+<div class="modal-backdrop" id="modal-join" style="display:none">
+  <div class="modal">
+    <h2>Join a Game</h2>
+    <label>Your Name</label>
+    <input type="text" id="join-name" placeholder="Enter your name" maxlength="16" autocomplete="off">
+    <label>Room Code</label>
+    <input type="text" id="join-code" placeholder="6-digit code" maxlength="6" autocomplete="off">
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-join-room">Join Game</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-join')">Cancel</button>
+    </div>
+    <p class="modal-error" id="join-error"></p>
+  </div>
+</div>
+
+<!-- Side Announcement Overlay -->
+<div class="modal-backdrop" id="overlay-sides" style="display:none">
+  <div class="modal">
+    <h2>Cards Dealt!</h2>
+    <div id="side-list"></div>
+    <p id="trump-chooser-info" style="margin-top:12px; color:#ffd700;"></p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-ack-sides">Continue</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Last Trick Modal -->
+<div class="modal-backdrop" id="modal-last-trick" style="display:none">
+  <div class="modal">
+    <h2>Last Trick</h2>
+    <div id="last-trick-display" class="last-trick-display"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal('modal-last-trick')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rules Modal -->
+<div class="modal-backdrop" id="modal-rules" style="display:none">
+  <div class="modal rules-modal">
+    <h2>How to Play CodePiece</h2>
+    <div class="rules-body">
+      <p><strong>Teams:</strong> P1 &amp; P3 (Team 1) vs P2 &amp; P4 (Team 2). Seated clockwise.</p>
+      <p><strong>Objective:</strong> Win 7 tricks in a game. Win the most games to win the match.</p>
+      <p><strong>Setup:</strong> 52 cards dealt equally (13 each). Trump chooser rotates each game.</p>
+      <p><strong>"I am Side":</strong> If you have no cards from a suit, all players are told before play begins.</p>
+      <p><strong>Trump:</strong> The trump chooser picks the trump suit. Any trump card beats any non-trump card. Lowest trump (2) beats highest non-trump (Ace).</p>
+      <p><strong>Playing a trick:</strong> You must follow the led suit if you have it. If you don't, you may play any card — including trump.</p>
+      <p><strong>Card values:</strong> A &gt; K &gt; Q &gt; J &gt; 10 &gt; 9 &gt; ... &gt; 2</p>
+      <p><strong>Match:</strong> 4 games per match. Team with the most game wins wins the match.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal('modal-rules')">Got it!</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

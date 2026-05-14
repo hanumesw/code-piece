@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww14140\viewh9000\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 I want you to develop a card game to be hosted on web. This game is called CodePiece.\
+\
+This game is played between 4 players and in teams. Assume P1, P2, P3 and P4 are sitting in clockwise direction, the teams are P1 and P3 (Team 1) and P2 and P4 (Team 2).\
+\
+Here are the rules of the game:\
+\
+1) All 52 cards are distributed equally between the players.\
+2) A match consists of 4 games, and in each game we go in a round robin fashion where a player selects a trump set (one of four diamonds, hearts, clubs or spades)\
+3) If any player doesn\'92t have any card from a set, a prompt from his end is visible to all other players and the prompt must say \'93I am side\'94.\
+4) If any player has no face card from any set, than the game ends and we reshuffle. Let\'92s keep our card distribution algorithm as random as possible, so we shouldn\'92t have any control on what cards land in which player\'92s hand.\
+5) Once all the above checks have been done and the trump has been chosen, the person choosing the trump starts the game by placing a card on the table.\
+6) Then we go round robin and each player has to place the same set on the table.\
+7) The round ends when all four players have put down their cards, the highest card wins the set. Which means the team from which the player put the highest card wins the set. And also winning player starts the next round.\
+8) The end goal of the game is to make 7 sets, and the team which makes 7 sets wins the game.\
+9) Now here is how the value of a card is defined:\
+	a) Ace is the highest, than King, than Queen, than Jack, than 10, 9, 8 \'85. 2 (being the lowest)\
+	b) If a player doesn\'92t have a card from a set he is allowed to either play a dummy card (random card from any set) or a trump card (from trump set). This is completely left to the player\'92s choice and any trump card supersedes other set. As an example a 2 of trump set is more powerful than Ace of another set. We need to make sure that a player can only use trump if he doesn\'92t posses the card of the set.\
+\
+That should be enough about the rules of the game, now let\'92s talk about UI.\
+\
+1) I want all players to be positioned in a circle and card are placed at the center.\
+2) One player\'92s cards aren\'92t visible to other players, not even teammates.\
+3) We should also show the amount of sets a team has made during a game, let\'92s say top right corner.\
+4) Any team can view the last set made, I mean they can see the cards of the last set only by clicking on the set.\
+5) After each game we show a tally of score on how many games each team won.\
+6) Now as soon as a user lands on the game, he must see a title card, and two buttons either to \'93Join an existing game\'94 or to \'93Host a new game\'94.\
+7) If user clicks on host a new game, we generate a random 6 digit code, which could be shared with other users to join the game.\
+8) If the user clicks on join a game, we give an input for them to enter the code (shared by host).\
+9) A room consists of four users only and is considered full if 4 users have joined.\
+10) We could also display a question mark somewhere on the screen all the time which shows the above mentioned rules to the user.\
+11) Also host can decide how many matches happen (we can keep it a dropdown with 1, 2, 3, 5 as of now) and at the end of all matches we display the winning team and give host the option to either start a new match / exit to main menu.\
+\
+That\'92s about the UI, we will talk about more general things now:\
+\
+1) Assume each player are on their own machine and are present physically wide apart, maybe in different cities. So the game must run through internet.\
+2) More to come later, but for now let\'92s keep this. We could also include sign in and account creation in future to maintain stats, but for now let\'92s keep it simple.\
+}
